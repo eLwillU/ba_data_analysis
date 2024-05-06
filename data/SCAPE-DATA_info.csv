@@ -1,0 +1,28 @@
+﻿LinkId;SCAPE-Frage;SCAPE 2;linkId;text
+1;15;15;1;Wurden Ihnen die möglichen Nebenwirkungen der Behandlung(en) in verständlicher Weise erklärt?
+2;16;16;2;Hat man Sie auch über Nebenwirkungen informiert, die später und nicht nur direkt im Anschluss an die Behandlung auftreten können?
+3;17;17;3;Wurden Sie in die Entscheidungen bezüglich Ihrer Behandlungen in gewünschtem Umfang einbezogen?
+4;18;18;4;Waren Ihre Familie oder nahestehende Personen im von Ihnen gewünschten Umfang in die Entscheidungen zu Ihren Behandlungen einbezogen?
+5;19;19;5;Wurden Ihre Lebensgewohnheiten und Ihre familiäre und/oder berufliche Situation bei den Entscheidungen zu Ihren Behandlungen berücksichtigt?
+6;20;20;6;Hat man mit Ihnen darüber gesprochen oder Ihnen Informationen dazu gegeben, welche Auswirkungen die Krebserkrankung auf Ihren Alltag hat (zum Beispiel auf Ihrer Arbeit, auf Ihre Freizeit)?
+7;50;57;7;Hat man Ihnen ausreichend praktische Ratschläge gegeben und/oder Unterstützung angeboten, um mit den Langzeitfolgen der Krebserkrankung oder der Behandlungen um-zugehen (zum Beispiel Müdigkeit, Schmerzen, Angst)?
+8;51;---;8;Hatten Sie am Ende der Behandlungen alle nötigen Informationen zur Nachsorge?
+9;52;61;9;Stehen Sie in regelmässigem Kontakt mit einer Bezugsperson (zum Beispiel: Arzt/Ärztin, Pflegefach-person, Sozialarbeiter:in) wegen der Nachsorge?
+10;52A;61A;10;Wenn ja, mit welcher?
+11;56;69;11;Hat man Ihnen Informationen zu Unterstützungs- oder Selbsthilfegruppen für Krebsbetroffene gegeben?
+12;57;70;12;Hat man Ihnen Informationen zu Hilfs- und Unterstützungsangeboten gegeben, um Ihnen zu helfen, mit Ihren Gefühlen umzugehen (zum Beispiel Stress, Angst, Traurigkeit)?
+13;58;71;13;Hat man Ihnen Informationen dazu gegeben, wie Sie finanzielle Unterstützung oder Leistungen erhalten können, auf die Sie möglicherweise Anspruch haben?
+14;59;72;14;Haben die verschiedenen Personen, die Sie behandelt und betreut haben (wie Ihr:e Hausarzt/-ärztin, Onkologe/-in, die Ärzteschaft und Pflegefachpersonen im Spital, Spitex) gut zusammengearbeitet, um Ihnen die bestmögliche Versorgung zu bieten?
+15;60;73;15;Hat man Ihnen einen Behandlungsplan gegeben? (Dabei handelt es sich um ein schriftliches Dokument, in dem Ihre Bedürfnisse und Ziele in Bezug auf die Behandlung der Krebserkrankung dargestellt sind
+16;61;74;16;Kam es im Lauf Ihrer Behandlung vor, dass Testergebnisse oder Ihre Krankenakte nicht rechtzeitig zum Behandlungstermin verfügbar waren?
+17;62;75;17;Kam es im Lauf Ihrer Behandlung vor, dass man Ihnen verwirrende oder widersprüchliche Informationen zu Ihrem Gesundheitszustand oder Ihren Behandlungen gegeben hat?
+18;63;76;18;Hatten Sie während Ihrer Behandlung den Eindruck, dass Tests oder andere Analysen unnötig wiederholt wurden?
+19;64;79;19;Wie schätzen Sie Ihre Behandlung und Betreuung insgesamt ein?
+20;75;113;20;Haben Sie Verständnisprobleme, wenn Sie eine schriftliche Information zu einer medizinischen Behandlung oder zu Ihrem Gesundheitszustand erhalten?
+21;76;114;21;Wie möchten Sie generell, dass medizinische Entscheidungen über Krebsbehandlungen getroffen werden?
+;;;;
+;;;;15, 16, 17, 18, 19, 20 (Entscheidung über die beste Behandlung für sie)
+;;;53;50, 51, 52, 53 (Mit und nach Krebs leben)
+;;;;56, 57, 58 (Unterstützung für Personen mit Krebs)
+;;;;59, 60, 61, 62, 63, 64 (Ihre Behandlung und Betreuung insgesamt)
+;;;;75, 76 (Stichwort health literacy)
