@@ -51,7 +51,7 @@ for (i in avg_questions) {
   temp_questions <- normal_questions %>%
     filter(linkId == i) %>%
     mutate(coding = case_when(
-      answer == look$one_index ~ as.integer(1),
+      answer <= look$one_index ~ as.integer(1),
       answer > look$one_index & answer < look$na_index ~ as.integer(0),
       answer >= look$na_index ~ NA
     ))
@@ -111,7 +111,6 @@ for (i in seq_len(nrow(scored_result))) {
 # Add the matched text as a new column to scored_result
 scored_result$text <- matched_texts
 
-write.csv(scored_result, "./data/result.csv", row.names = FALSE)
-str(scored_result)
+write.csv(scored_result, "./data/result.csv", row.names = FALSE,fileEncoding = "UTF-8")
 
 
