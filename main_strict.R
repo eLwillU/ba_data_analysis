@@ -14,7 +14,7 @@ library(ggplot2)
 
 ### Import and assign data
 exported_data <- readr::read_delim("./data/exported_data.csv", delim = ";", na = "NA")
-lookup_data <- readxl::read_excel("./data/lookup_table.xlsx")
+lookup_data <- readxl::read_excel("./data/lookup_table_strict.xlsx")
 data <- base::data.frame(exported_data)
 
 ### Select necessary columns and remove NAs
@@ -41,6 +41,7 @@ negative_questions <- data_selected %>%
   arrange(linkId) %>%
   filter(linkId %in% avg_negative_questions)
 
+
 ### Create empty dataframe for processing
 mutated_questions <- data.frame()
 
@@ -48,15 +49,19 @@ mutated_questions <- data.frame()
 ### To calculate the positive questions
 for (i in avg_questions) {
   look <- lookup_data[i,]
+  index_one <- look$NumAnswers - look$zero_index
+  index_one <- look$NumAnswers - look$zero_index
+
   temp_questions <- normal_questions %>%
     filter(linkId == i) %>%
     mutate(coding = case_when(
       answer <= look$one_index ~ as.integer(1),
-      answer > look$one_index & answer < look$na_index ~ as.integer(0),
+      answer >= look$zero_index & answer < look$na_index ~ as.integer(0),
       answer >= look$na_index ~ NA
     ))
   mutated_questions <- rbind(mutated_questions, temp_questions)
 }
+
 
 ### Looping over avg_negative_questions to assign the correct codings
 ### To calculate the negative questions
@@ -65,8 +70,8 @@ for (i in avg_negative_questions) {
   temp_questions <- negative_questions %>%
     filter(linkId == i) %>%
     mutate(coding = case_when(
-      answer == look$one_index ~ as.integer(1),
-      answer < look$one_index ~ as.integer(0),
+      answer <= look$zero_index ~ as.integer(0),
+      answer > look$zero_index & answer < look$na_index ~ as.integer(1),
       answer >= look$na_index ~ NA
     ))
   mutated_questions <- rbind(mutated_questions, temp_questions)
@@ -86,8 +91,9 @@ summarised_coding <- mutated_questions %>%
 
 ### Calculate percentages
 scored_result <- summarised_coding %>%
-  mutate(score = (coding_1 / (coding_0 + coding_1)) * 100)%>%
+  mutate(score = (coding_1 / (coding_0 + coding_1)) * 100) %>%
   mutate(score = round(score, digits = 2))
+
 
 # Initialize an empty vector to store the matched text
 matched_texts <- c()
@@ -108,9 +114,10 @@ for (i in seq_len(nrow(scored_result))) {
   }
 }
 
+
 # Add the matched text as a new column to scored_result
 scored_result$text <- matched_texts
 
-write.csv(scored_result, "./data/result.csv", row.names = FALSE,fileEncoding = "UTF-8")
+write.csv(scored_result, "./data/result_strict.csv", row.names = FALSE, fileEncoding = "UTF-8")
 
 
