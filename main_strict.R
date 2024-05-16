@@ -3,14 +3,14 @@
 #install.packages("ggplot2")
 #install.packages("readr")
 #install.packages("tidyverse")
-
+#install.packages("ggcorrplot")
 ### Load necessary packages
 library(readr)
 library(dplyr)
 library(readxl)
 library(tidyr)
 library(ggplot2)
-
+library(ggcorrplot)
 
 ### Import and assign data
 exported_data <- readr::read_delim("./data/exported_data.csv", delim = ";", na = "NA")
@@ -27,6 +27,31 @@ data_selected <- data %>%
 ### Check if NA have been removed
 nrow(data_selected) / 21
 
+# Load required libraries
+library(dplyr)
+library(tidyr)
+
+# Create the sample dataset
+df <- data_selected %>% select(linkId, answer)
+
+# Add respondent_id
+df <- df %>%
+  mutate(respondent_id = (row_number() - 1) %/% 21 + 1)
+
+# Transform the data to wide format
+df_wide <- df %>%
+  pivot_wider(names_from = linkId, values_from = answer, names_prefix = "Q") %>%
+  select(-c("respondent_id"))
+# View the transformed dataset
+print(df_wide)
+corr <- round(cor(df_wide), 1)
+p.mat <- cor_pmat(df_wide)
+
+
+ggcorrplot(corr, hc.order = TRUE, outline.color = "white", lab=T)
+#ggcorrplot(corr, hc.order = TRUE, outline.color = "white", lab=T, p.mat = p.mat,  insig = "blank")
+
+str(data_selected)
 ### Distribute Questions for easier calculation
 avg_questions <- c(1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13)
 avg_negative_questions <- c(16, 17, 18)
