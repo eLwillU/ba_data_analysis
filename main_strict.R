@@ -13,7 +13,8 @@ library(ggplot2)
 library(ggcorrplot)
 
 ### Import and assign data
-exported_data <- readr::read_delim("./data/exported_data.csv", delim = ";", na = "NA")
+exported_data <- readr::read_delim("./data/exported_data.csv", delim = ";", na = "NA") %>%
+  na.omit()
 lookup_data <- readxl::read_excel("./data/lookup_table_strict.xlsx")
 data <- base::data.frame(exported_data)
 
@@ -40,15 +41,15 @@ df <- df %>%
 
 # Transform the data to wide format
 df_wide <- df %>%
-  pivot_wider(names_from = linkId, values_from = answer, type = "lower", names_prefix = "Q") %>%
+  pivot_wider(names_from = linkId, values_from = answer, names_prefix = "Q") %>%
   select(-c("respondent_id"))
 # View the transformed dataset
 print(df_wide)
-corr <- round(cor(df_wide), 1)
+corr <- round(cor(df_wide,method = "pearson"), 1)
 p.mat <- cor_pmat(df_wide)
 
 p.mat
-ggcorrplot(corr, hc.order = T, outline.color = "black", lab=T,  p.mat = p.mat,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
+ggcorrplot(corr, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
 #ggcorrplot(corr, hc.order = TRUE, outline.color = "white", lab=T, p.mat = p.mat,  insig = "blank")
 
 str(data_selected)
