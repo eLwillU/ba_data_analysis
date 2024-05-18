@@ -22,7 +22,7 @@ nrow(data_selected) / 21
 
 avg_questions <- c(1, 2, 3, 4, 5, 6, 7, 8,9 ,11, 12, 13)
 avg_negative_questions <- c(16, 17, 18)
-other_question <- c()
+other_question <- 10
 
 ### Filter and assign Data to DataFrames
 normal_questions <- data_selected %>%
@@ -70,6 +70,11 @@ for (i in avg_negative_questions) {
     ))
   mutated_questions <- rbind(mutated_questions, temp_questions)
 }
+range_answer <- data_selected %>%
+  filter(linkId == 19) %>%
+  mutate(coding = answer)
+mutated_questions_regression <- rbind(mutated_questions, range_answer)
+
 
 selected_questions <- c(1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,17,18,20,21)
 
@@ -82,31 +87,49 @@ mutated_questions <- mutated_questions %>%
 # Create the sample dataset
 df <- mutated_questions
 
-wide_data <- df %>%
-  group_by(subject, linkId) %>%
-  summarise(coding = max(coding),.groups = 'drop') %>%
-  pivot_wider(names_from = linkId, values_from = coding,names_prefix = "Q") %>%
-  select(-subject)
+prep_matrix <- function(df){
+  
+  wide_data <- df %>%
+    group_by(subject, linkId) %>%
+    summarise(coding = max(coding),.groups = 'drop') %>%
+    pivot_wider(names_from = linkId, values_from = coding,names_prefix = "Q") %>%
+    select(-subject)
+  
+  matrix <- wide_data_filled_rounded <- wide_data %>%
+    mutate(across(everything(), ~ {
+      # Replace NA with column mean
+      filled <- ifelse(is.na(.), mean(., na.rm = TRUE), .)
+      # Round values to 0 or 1
+      rounded <- ifelse(filled < 0.5, 0, 1)
+      return(rounded)
+    }))
+  
+  return(matrix) 
+}
+library(MASS)
+mat2 <- prep_matrix(mutated_questions_regression)
+model <- glm(mat2$Q19 ~ ., data = mat2)
+stepwise_model <- stepAIC(model, direction = "both")
+summary(stepwise_model)
 
-wide_data_filled_rounded <- wide_data %>%
-  mutate(across(everything(), ~ {
-    # Replace NA with column mean
-    filled <- ifelse(is.na(.), mean(., na.rm = TRUE), .)
-    # Round values to 0 or 1
-    rounded <- ifelse(filled < 0.5, 0, 1)
-    return(rounded)
-  }))
+mat <- prep_matrix(mutated_questions)
 
-corr <- round(cor(wide_data_filled_rounded,method = "pearson"), 1)
-p.mat <- cor_pmat(wide_data_filled_rounded)
+corr <- round(cor(mat,method = "pearson"), 2)
+p.mat <- cor_pmat(mat)
 
 ggcorrplot(corr, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
+
 #ggcorrplot(corr, hc.order = TRUE, outline.color = "white", lab=T, p.mat = p.mat,  insig = "blank")
+positive_proportion <- colMeans(wide_data_filled_rounded, na.rm = TRUE)
+print(positive_proportion)
 
+library(psych)
+efa_results <- fa(wide_data_filled_rounded, nfactors = 2, rotate = "varimax")
+print(efa_results)
 
+cronbach_alpha <- psych::alpha(wide_data_filled_rounded)
+print(cronbach_alpha)
 ########################
-
-
 
 
 
