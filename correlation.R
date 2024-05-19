@@ -87,15 +87,19 @@ mutated_questions <- mutated_questions %>%
 # Create the sample dataset
 df <- mutated_questions
 
-prep_matrix <- function(df){
+prep_matrix <- function(df, Q19){
   
   wide_data <- df %>%
     group_by(subject, linkId) %>%
     summarise(coding = max(coding),.groups = 'drop') %>%
-    pivot_wider(names_from = linkId, values_from = coding,names_prefix = "Q") %>%
-    select(-subject)
+    pivot_wider(names_from = linkId, values_from = coding,names_prefix = "Q")
+    #dplyr::select(-subject)
   
-  matrix <- wide_data_filled_rounded <- wide_data %>%
+  if(Q19 == T){
+  temp_data <- wide_data %>% dplyr::select(Q19)
+  wide_data <- wide_data %>% dplyr::select(-Q19)
+  }
+  matrix <- wide_data %>%
     mutate(across(everything(), ~ {
       # Replace NA with column mean
       filled <- ifelse(is.na(.), mean(., na.rm = TRUE), .)
@@ -104,20 +108,35 @@ prep_matrix <- function(df){
       return(rounded)
     }))
   
+  if(Q19==T){
+  matrix <- cbind(matrix, temp_data)
+  }
+  matrix <- matrix %>% dplyr::select(-subject)
   return(matrix) 
 }
 library(MASS)
-mat2 <- prep_matrix(mutated_questions_regression)
-model <- glm(mat2$Q19 ~ ., data = mat2)
+
+mat2 <- prep_matrix(mutated_questions_regression,T)
+model <- lm(mat2$Q19 ~ ., data = mat2)
+summary(model <- lm(mat2$Q19 ~ ., data = mat2))
+
 stepwise_model <- stepAIC(model, direction = "both")
 summary(stepwise_model)
 
-mat <- prep_matrix(mutated_questions)
+mat <- prep_matrix(mutated_questions, F)
 
 corr <- round(cor(mat,method = "pearson"), 2)
 p.mat <- cor_pmat(mat)
 
 ggcorrplot(corr, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
+
+
+corr2 <- round(cor(mat2,method = "pearson"), 2)
+p.mat2 <- cor_pmat(mat2)
+
+ggcorrplot(corr2, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat2,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
+
+
 
 #ggcorrplot(corr, hc.order = TRUE, outline.color = "white", lab=T, p.mat = p.mat,  insig = "blank")
 positive_proportion <- colMeans(wide_data_filled_rounded, na.rm = TRUE)
