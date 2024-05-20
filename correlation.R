@@ -114,9 +114,15 @@ prep_matrix <- function(df, Q19){
   matrix <- matrix %>% dplyr::select(-subject)
   return(matrix) 
 }
+
 library(MASS)
 
+selected_short <- c(1, 2, 4, 5, 12, 13, 17,19)
+selected_short_q <- paste0("Q", selected_short)
+mutated_questions_regression <- mutated_questions_regression %>% filter(linkId %in% selected_short)
+
 mat2 <- prep_matrix(mutated_questions_regression,T)
+
 model <- lm(mat2$Q19 ~ ., data = mat2)
 summary(model <- lm(mat2$Q19 ~ ., data = mat2))
 
@@ -130,11 +136,12 @@ p.mat <- cor_pmat(mat)
 
 ggcorrplot(corr, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
 
-
 corr2 <- round(cor(mat2,method = "pearson"), 2)
 p.mat2 <- cor_pmat(mat2)
 
 ggcorrplot(corr2, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat2,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
+
+
 
 
 
