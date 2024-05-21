@@ -186,14 +186,4 @@ p.mat
 ggcorrplot(corr, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
 #ggcorrplot(corr, hc.order = TRUE, outline.color = "white", lab=T, p.mat = p.mat,  insig = "blank")
 
-1 * 0.5036 +    
-1 * 0.4535  +        
-1 * 1.3202   +  
-1 * 0.5723  +  5.3155
-7
-            0.7861 
-              0.5036   
-            0.4535         
-            0.6890       
-             1.3202     
-         0.6480 
+
