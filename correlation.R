@@ -33,6 +33,10 @@ negative_questions <- data_selected %>%
   arrange(linkId) %>%
   filter(linkId %in% avg_negative_questions)
 
+other_questions <- data_selected %>%
+  arrange(linkId) %>%
+  filter(linkId == 10) %>% 
+  dplyr::select(subject, answer)
 
 ### Create empty dataframe for processing
 mutated_questions <- data.frame()
@@ -97,6 +101,7 @@ prep_matrix <- function(df, Q19){
   
   if(Q19 == T){
   temp_data <- wide_data %>% dplyr::select(Q19)
+  temp_subject <- wide_data %>% dplyr::select(subject)
   wide_data <- wide_data %>% dplyr::select(-Q19)
   }
   matrix <- wide_data %>%
@@ -112,6 +117,8 @@ prep_matrix <- function(df, Q19){
   matrix <- cbind(matrix, temp_data)
   }
   matrix <- matrix %>% dplyr::select(-subject)
+  matrix <- cbind(matrix, temp_subject)
+  
   return(matrix) 
 }
 
@@ -122,68 +129,29 @@ selected_short_q <- paste0("Q", selected_short)
 mutated_questions_regression <- mutated_questions_regression %>% filter(linkId %in% selected_short)
 
 mat2 <- prep_matrix(mutated_questions_regression,T)
-summary(lm(mat2$Q19 ~ ., data = mat2))
 
-model <- lm(mat2$Q19 ~ ., data = mat2)
-summary(model <- lm(mat2$Q19 ~ ., data = mat2))
+df_merge <- merge(mat2, other_questions, by="subject") %>%
+  rename("Q10" = answer) %>%
+  mutate(Q10 = factor(Q10))%>%
+  pivot_wider(names_from = Q10, values_from = Q10, names_prefix = "P",
+              values_fn = length, values_fill = 0) %>%
+  dplyr::select(-subject)
 
-stepwise_model <- stepAIC(model, direction = "both")
+mat2_model <- lm(df_merge$Q19 ~ ., data = df_merge)
+summary(mat2_model)
+
+stepwise_model <- stepAIC(mat2_model, direction = "both")
 summary(stepwise_model)
 
 mat <- prep_matrix(mutated_questions, F)
 
 corr <- round(cor(mat,method = "pearson"), 2)
 p.mat <- cor_pmat(mat)
-
 ggcorrplot(corr, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
 
 corr2 <- round(cor(mat2,method = "pearson"), 2)
 p.mat2 <- cor_pmat(mat2)
-
 ggcorrplot(corr2, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat2,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
 
-
-
-
-
-#ggcorrplot(corr, hc.order = TRUE, outline.color = "white", lab=T, p.mat = p.mat,  insig = "blank")
-positive_proportion <- colMeans(wide_data_filled_rounded, na.rm = TRUE)
-print(positive_proportion)
-
-library(psych)
-efa_results <- fa(wide_data_filled_rounded, nfactors = 2, rotate = "varimax")
-print(efa_results)
-
-cronbach_alpha <- psych::alpha(wide_data_filled_rounded)
-print(cronbach_alpha)
-########################
-
-
-
-# Create the sample dataset
-df <- mutated_questions %>% select(linkId, coding) %>%
-  group_by(row_id = row_number() %/% max(linkId))  %>%
-  pivot_wider(names_from = linkId, values_from = coding, names_prefix = "Q") %>%
-  ungroup() %>%
-  select(-row_id)
-
-
-df$id <- ave(df$linkId, df$linkId, FUN = seq_along)
-reshaped_df <- pivot_wider(df, names_from = id, values_from = coding)
-# Add respondent_id
-df <- df %>%
-  mutate(respondent_id = (row_number() - 1) %/% 21 + 1)
-
-# Transform the data to wide format
-df_wide <- df %>%
-  pivot_wider(names_from = linkId, values_from = coding, names_prefix = "Q") %>%
-  select(-c("respondent_id"))
-# View the transformed dataset
-print(df_wide)
-corr <- round(cor(df_wide,method = "pearson"), 1)
-p.mat <- cor_pmat(df_wide)
-p.mat
-ggcorrplot(corr, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
-#ggcorrplot(corr, hc.order = TRUE, outline.color = "white", lab=T, p.mat = p.mat,  insig = "blank")
 
 
