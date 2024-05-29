@@ -37,7 +37,7 @@ data_wide <- test %>%
 
 corr <- round(cor(data_wide,method = "pearson"), 2)
 p.mat <- cor_pmat(data_wide)
-ggcorrplot(corr, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen",
+ggcorrplot(corr, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat,  insig = "blank",title = "Korrelationsmatrix Fragebogen",
                    ggtheme = ggplot2::theme_bw,
 )
 
@@ -73,6 +73,11 @@ summary(model2)
 
 
 model1 <- lm(data_wide$Q19 ~ ., data = data_wide)
+stepwise_Modell <- stepAIC(model1, direction = "both")
+summary(model1)
+summary(stepwise_Modell)
+
+model1 <- glm(data_wide$P1 ~ ., data = data_wide)
 stepwise_Modell <- stepAIC(model1, direction = "both")
 summary(model1)
 summary(stepwise_Modell)
