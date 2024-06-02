@@ -29,11 +29,14 @@ data_wide <- test %>%
   group_by(subject, linkId) %>%
   summarise(answer = min(answer),.groups = 'drop') %>%
   pivot_wider(names_from = linkId, values_from = answer,names_prefix = "Q") %>%
-  dplyr::select(-c(subject, Q9)) %>%
+  dplyr::select(-c(subject)) %>%
   mutate(Q10 = factor(Q10))%>%
   pivot_wider(names_from = Q10, values_from = Q10, names_prefix = "P",
               values_fn = length, values_fill = 0)
 
+
+freqs(data_wide$Q2)
+table(data_wide$Q10)
 
 corr <- round(cor(data_wide,method = "pearson"), 2)
 p.mat <- cor_pmat(data_wide)

@@ -154,10 +154,13 @@ corr2 <- round(cor(mat2,method = "pearson"), 2)
 p.mat2 <- cor_pmat(mat2)
 ggcorrplot(corr2, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat2,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
 
-
+library(corrplot)
+library(PerformanceAnalytics)
+library(lares)
 mat <- prep_matrix(mutated_questions, F)
-
-
+freqs(mat, plot=T, rel=T)
+dägg <- table(mat$Q2)
+?freqs
 yeet <- mutated_questions %>%
   group_by(subject, linkId) %>%
   summarise(coding = max(coding),.groups = 'drop') %>%
