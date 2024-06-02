@@ -20,8 +20,8 @@ data_selected <- data %>%
 nrow(data_selected) / 21
 
 
-avg_questions <- c(1, 2, 3, 4, 5, 6, 7, 8,9 ,11, 12, 13)
-avg_negative_questions <- c(16, 17, 18)
+avg_questions <- c(1, 2, 3, 4, 5, 6, 7, 8,9 ,11, 12, 13,14,15)
+avg_negative_questions <- c(16, 17, 18,20)
 other_question <- 10
 
 ### Filter and assign Data to DataFrames
@@ -112,12 +112,13 @@ prep_matrix <- function(df, Q19){
       rounded <- ifelse(filled < 0.5, 0, 1)
       return(rounded)
     }))
+  matrix <- matrix %>% dplyr::select(-subject)
   
   if(Q19==T){
   matrix <- cbind(matrix, temp_data)
-  }
-  matrix <- matrix %>% dplyr::select(-subject)
   matrix <- cbind(matrix, temp_subject)
+  
+  }
   
   return(matrix) 
 }
@@ -154,4 +155,13 @@ p.mat2 <- cor_pmat(mat2)
 ggcorrplot(corr2, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat2,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
 
 
+mat <- prep_matrix(mutated_questions, F)
 
+
+yeet <- mutated_questions %>%
+  group_by(subject, linkId) %>%
+  summarise(coding = max(coding),.groups = 'drop') %>%
+  pivot_wider(names_from = linkId, values_from = coding,names_prefix = "Q")
+
+counts_list<- sapply(yeet, function(column) table(factor(column, levels = c(0, 1))), simplify = FALSE)
+counts_list

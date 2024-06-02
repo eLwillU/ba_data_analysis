@@ -48,6 +48,7 @@ summ(model)
 plot_summs(model)
 stepwise_model <- stepAIC(model, direction = "both")
 summary(stepwise_model)
+summ(stepwise_model)
 boxplot(data_wide$Q19)
 
 data_aic <- data_wide %>%
@@ -55,7 +56,7 @@ data_aic <- data_wide %>%
 
 corr2 <- round(cor(data_aic,method = "pearson"), 2)
 p.mat2 <- cor_pmat(data_aic)
-ggcorrplot(corr2, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat2,  insig = "blank",title = "Korrelationsmatrix SCAPE-Fragen")
+ggcorrplot(corr2, hc.order = T, outline.color = "black", lab=T, type = "lower", p.mat = p.mat2,  insig = "blank")
 
 library(corrplot)
 library(PerformanceAnalytics)
@@ -110,6 +111,6 @@ ggcorrplot(corr2, hc.order = T,
            type = "lower", 
            p.mat = p.mat2,  
            insig = "blank",
-           title = "Abbildung 1: Korrelationsmatrix") + theme(plot.title = element_text(size=18)) 
+           ) 
 
 
